@@ -1,17 +1,17 @@
 const componentsCatalog = {
     frames: [
         { id: 'frame-1', name: 'Dartmoor Hornet Pro', price: 35000, color: '#1e1e1e', image: 'assets/dartmoor_hornet_pro.png', wheelSize: 27.5 },
-        { id: 'frame-2', name: 'Dartmoor Thunderbird', price: 85000, color: '#457b9d', wheelSize: 29 },
+        { id: 'frame-2', name: 'Dartmoor Thunderbird', price: 85000, color: '#457b9d', image: 'assets/dartmoor_thunderbird.png', wheelSize: 29 },
     ],
     forks: [
-        {id: 'fork-1', name: 'RockShox Lyrik', price: 36000, color: '#682add', travelSize: 160 },
-        {id: 'fork-2', name: 'RockShox Zeb', price: 62000, color: '#c75427', travelSize: 180 },
+        {id: 'fork-1', name: 'RockShox Lyrik', price: 36000, color: '#682add', image: 'assets/rockshox_lyrik_select.png', travelSize: 160 },
+        {id: 'fork-2', name: 'RockShox Zeb Ultimate', price: 62000, color: '#c75427', image: 'assets/rockshox_zeb_ultimate_red.png', travelSize: 180 },
     ],
     wheels: [
-        {id: 'wheel-1', name: 'DT Swiss EX1700', price: 40000, color: '#16d2d8', wheelSize: [27.5, 29] },
+        {id: 'wheel-1', name: 'DT Swiss EX1700', price: 40000, color: '#16d2d8', image: 'assets/dt_swiss_ex1700.png', wheelSize: [27.5, 29] },
     ],
     drivetrain: [
-        {id: 'drivetrain-1', name: 'SHIMANO Deore M8100', price: 17500, color: '#17d52d', gears: 12 }
+        {id: 'drivetrain-1', name: 'SHIMANO Deore M8100', price: 17500, color: '#17d52d', image: 'assets/shimano_deore-xt_m8100_51t-groupset.png', gears: 12 }
     ]
 };
 
