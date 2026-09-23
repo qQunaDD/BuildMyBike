@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BuildMyBike - Кастомный конфигуратор</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="logo">Build<span>My</span>Bike</div>
+        <div class="nav-controls">
+            <button class="lang-switch">EN / RU</button>
+            <button class="profile-btn">Профиль</button>
+        </div>
+    </header>
+
+    <main class="builder-container">
+
+        <aside class="panel parts-selection">
+            <h2>Выбор деталей</h2>
+            <div class="parts-list">
+                <div class="part-item active" data-part="frame">
+                    <div class="part-info">
+                        <span class="part-type">Рама</span>
+                        <span class="part-selected-name" id="selected-frame-name">Dartmoor Hornet pro</span>
+                    </div>
+                    <button class="add-btn" id="btn-select-frame">+</button>
+                </div>
+
+                <div class="part-item" data-part="fork">
+                    <div class="part-info">
+                        <span class="part-type">Вилка</span>
+                        <span class="part-selected-name" id="selected-fork-name">Не выбрано</span>
+                    </div>
+                    <button class="add-btn" id="btn-select-fork">+</button>
+                </div>
+
+                <div class="part-item" data-part="wheels">
+                    <div class="part-info">
+                        <span class="part-type">Вилсет (Колёса)</span>
+                        <span class="part-selected-name" id="selected-wheels-name">Не выбрано</span>
+                    </div>
+                    <button class="add-btn" id="btn-select-wheels">+</button>
+                </div>
+
+                <div class="part-item" data-part="drivetrain">
+                    <div class="part-info">
+                        <span class="part-type">Шатуны / Трансмиссия</span>
+                        <span class="part-selected-name" id="selected-drivetrain-name">Не выбрано</span>
+                    </div>
+                    <button class="add-btn" id="btn-selected-drivetrain">+</button>
+                </div>
+            </div>
+            <button class="btn-secondary" id="reset-btn">Сбросить конфигурацию</button>
+        </aside>
+
+        <div id="catalog-container" style="padding: 20px; border: 1px solid #ccc; border-radius: 8px; margin: 10px; z-index: 10;"></div>
+
+        <section class="canvas-area">
+            <div class="bike-viewport">
+                <div class="viewport-placeholder">
+                    <div class="mock-frame" id="mock-frame"></div>
+                    <p class="viewport-hint">Область визуализации сборки (2D)</p>
+                </div>
+            </div>
+
+            <div class="canvas-toolbar">
+                <span class="toolbar-label">Цвет рамы:</span>
+                <div class="color-palette"></div>
+                <button class="color-dot" style="background: #1e1e1e;" data-color="#1e1e1e"></button>
+                <button class="color-dot" style="background: #e63946;" data-color="#e63946"></button>
+                <button class="color-dot" style="background: #457b9d;" data-color="#457b9d"></button>
+                <button class="color-dot" style="background: #a8dadc;" data-color="#a8dadc"></button>
+            </div>
+            </div>
+        </section>
+
+        <aside class="panel summary-panel">
+            <h2>Спецификация</h2>
+
+            <div class="summary-details">
+                <div class="summary-row">
+                    <span>Рама:</span>
+                    <strong id="summary-frame">Dartmoor Hornet Pro</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Размер колёс:</span>
+                    <strong id="summary-wheels">27.5</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Расчётный вес:</span>
+                    <strong id="summary-weight">~ 12.8 кг</strong>
+                </div>
+            </div>
+
+            <div class="price-box">
+                <span class="price-label">Итоговая стоимость:</span>
+                <div class="price-value" id="total-price">125 000 ₽</div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-primary" id="save-build-btn">Сохранить сборку</button>
+                <button class="btn-outline" id="buy-build-btn">Где купить компоненты</button>
+            </div>
+        </aside>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
