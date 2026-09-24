@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 
 <head>
     <meta charset="UTF-8">
@@ -25,10 +25,10 @@
         <aside class="panel parts-selection">
             <h2>Выбор деталей</h2>
             <div class="parts-list">
-                <div class="part-item active" data-part="frame">
+                <div class="part-item" data-part="frame">
                     <div class="part-info">
                         <span class="part-type">Рама</span>
-                        <span class="part-selected-name" id="selected-frame-name">Dartmoor Hornet pro</span>
+                        <span class="part-selected-name" id="selected-frame-name">Не выбрано</span>
                     </div>
                     <button class="add-btn" id="btn-select-frame">+</button>
                 </div>
@@ -62,20 +62,14 @@
 
         <section class="canvas-area">
             <div class="bike-viewport">
-                <div class="viewport-placeholder">
-                    <div class="mock-frame" id="mock-frame"></div>
-                    <p class="viewport-hint">Область визуализации сборки (2D)</p>
+                <div class="bike-stage" id="bike-stage">
+                    <!-- Слои рендера деталей: накладываются друг на друга -->
+                    <img id="layer-wheels" class="bike-layer hidden" alt="Колеса">
+                    <img id="layer-fork" class="bike-layer hidden" alt="Вилка">
+                    <img id="layer-frame" class="bike-layer hidden" alt="Рама">
+                    <img id="layer-drivetrain" class="bike-layer hidden" alt="Трансмиссия">
                 </div>
-            </div>
-
-            <div class="canvas-toolbar">
-                <span class="toolbar-label">Цвет рамы:</span>
-                <div class="color-palette"></div>
-                <button class="color-dot" style="background: #1e1e1e;" data-color="#1e1e1e"></button>
-                <button class="color-dot" style="background: #e63946;" data-color="#e63946"></button>
-                <button class="color-dot" style="background: #457b9d;" data-color="#457b9d"></button>
-                <button class="color-dot" style="background: #a8dadc;" data-color="#a8dadc"></button>
-            </div>
+                <p class="viewport-hint" id="viewport-hint">Область визуализации сборки (2D)</p>
             </div>
         </section>
 
@@ -85,21 +79,21 @@
             <div class="summary-details">
                 <div class="summary-row">
                     <span>Рама:</span>
-                    <strong id="summary-frame">Dartmoor Hornet Pro</strong>
+                    <strong id="summary-frame">-</strong>
                 </div>
                 <div class="summary-row">
                     <span>Размер колёс:</span>
-                    <strong id="summary-wheels">27.5</strong>
+                    <strong id="summary-wheels">-</strong>
                 </div>
                 <div class="summary-row">
                     <span>Расчётный вес:</span>
-                    <strong id="summary-weight">~ 12.8 кг</strong>
+                    <strong id="summary-weight">~ 0 кг</strong>
                 </div>
             </div>
 
             <div class="price-box">
                 <span class="price-label">Итоговая стоимость:</span>
-                <div class="price-value" id="total-price">125 000 ₽</div>
+                <div class="price-value" id="total-price">0 ₽</div>
             </div>
 
             <div class="action-buttons">
@@ -116,9 +110,7 @@
                 <h2 id="modal-title">Выберите деталь</h2>
                 <button id="close-modal-btn" class="close-btn">&times;</button>
             </div>
-            <div id="modal-body" class="modal-body">
-                
-            </div>
+            <div id="modal-body" class="modal-body"></div>
         </div>
     </div>
 
