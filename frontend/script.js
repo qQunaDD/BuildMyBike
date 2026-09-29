@@ -1,20 +1,41 @@
 // 1. БАЗА ДАННЫХ (КАТАЛОГ ДЕТАЛЕЙ)
 const componentsCatalog = {
     frame: [
-        { id: 'frame-1', name: 'Dartmoor Hornet Pro', price: 35000, weight: 2.5, headtube: 'tapered', bbType: 'BSA', rearAxle: '148x12', image: 'assets/dartmoor_hornet_pro.png', wheelSize: 27.5 },
-        { id: 'frame-2', name: 'Dartmoor Thunderbird', price: 85000, weight: 3.1, headtube: 'tapered', bbType: 'BSA', rearAxle: '148x12', image: 'assets/dartmoor_thunderbird.png', wheelSize: 29 }
+        { 
+            id: 'frame-1', 
+            name: 'Dartmoor Hornet Pro', 
+            price: 35000, 
+            weight: 2.5, 
+            headtube: 'tapered', 
+            bbType: 'BSA', 
+            rearAxle: '148x12', 
+            imageBack: 'assets/frame-1-back.png', 
+            imageFront: 'assets/frame-1-front.png', // Добавлено расширение .png
+            wheelSize: 27.5 
+        },
+        { 
+            id: 'frame-2', 
+            name: 'Dartmoor Thunderbird', 
+            price: 85000, 
+            weight: 3.1, 
+            headtube: 'tapered', 
+            bbType: 'BSA', 
+            rearAxle: '148x12', 
+            imageFront: 'assets/dartmoor_thunderbird.png', 
+            wheelSize: 29 
+        }
     ],
     fork: [
-        { id: 'fork-1', name: 'RockShox Lyrik', price: 36000, weight: 2.0, steerer: 'tapered', image: 'assets/rockshox_lyrik_select.png', travel: 160, wheelSize: 27.5 },
+        { id: 'fork-1', name: 'RockShox Lyrik', price: 36000, weight: 2.0, steerer: 'tapered', image: 'assets/fork-1.png', travel: 160, wheelSize: 27.5 },
         { id: 'fork-2', name: 'RockShox Zeb Ultimate', price: 62000, weight: 2.2, steerer: 'tapered', image: 'assets/rockshox_zeb_ultimate_red.png', travel: 180, wheelSize: 29 },
         { id: 'fork-3', name: 'RST Dirt', price: 15000, weight: 2.8, steerer: 'straight', travel: 100, wheelSize: 26, image: 'assets/rst_dirt_.png' }
     ],
     wheels: [
-        { id: 'wheel-1', name: 'DT Swiss EX1700', price: 40000, weight: 1.8, image: 'assets/dt_swiss_ex1700.png', wheelSize: 27.5, axleStandard: '148x12' },
+        { id: 'wheel-1', name: 'DT Swiss EX1700', price: 40000, weight: 1.8, image: 'assets/wheels-1.png', wheelSize: 27.5, axleStandard: '148x12' },
         { id: 'wheel-2', name: 'NoName 29er', price: 12000, weight: 2.4, wheelSize: 29, axleStandard: '135x10' }
     ],
     drivetrain: [
-        { id: 'drivetrain-1', name: 'SHIMANO Deore M8100', price: 17500, weight: 1.9, color: '#17d52d', bbCompatibility: 'BSA', image: 'assets/shimano_deore-xt_m8100_51t-groupset.png', gears: 12 }
+        { id: 'drivetrain-1', name: 'SHIMANO Deore M8100', price: 17500, weight: 1.9, color: '#17d52d', bbCompatibility: 'BSA', image: 'assets/drivetrain-1.png', gears: 12 }
     ]
 };
 
@@ -60,13 +81,11 @@ function calculateTotals() {
 
 // 5. ОБНОВЛЕНИЕ ТЕКСТОВОГО UI
 function updateUI() {
-    // Левая панель
     document.getElementById('selected-frame-name').innerText = currentBuild.frame ? currentBuild.frame.name : 'Не выбрано';
     document.getElementById('selected-fork-name').innerText = currentBuild.fork ? currentBuild.fork.name : 'Не выбрано';
     document.getElementById('selected-wheels-name').innerText = currentBuild.wheels ? currentBuild.wheels.name : 'Не выбрано';
     document.getElementById('selected-drivetrain-name').innerText = currentBuild.drivetrain ? currentBuild.drivetrain.name : 'Не выбрано';
 
-    // Правая панель
     document.getElementById('summary-frame').innerText = currentBuild.frame ? currentBuild.frame.name : '-';
     document.getElementById('summary-wheels').innerText = currentBuild.wheels ? `${currentBuild.wheels.wheelSize}"` : '-';
     document.getElementById('summary-weight').innerText = `~ ${currentBuild.totalWeight.toFixed(1)} кг`;
@@ -75,22 +94,37 @@ function updateUI() {
 
 // 6. СЛОЙ 2D-ВИЗУАЛИЗАЦИИ
 function updateVisualizer() {
-    const categories = ['wheels', 'fork', 'frame', 'drivetrain'];
     let hasAnyPart = false;
 
-    categories.forEach(cat => {
-        const layer = document.getElementById(`layer-${cat}`);
+    function setLayer(id, imagePath) {
+        const layer = document.getElementById(id);
         if (!layer) return;
 
-        if (currentBuild[cat] && currentBuild[cat].image) {
-            layer.src = currentBuild[cat].image;
+        if (imagePath) {
+            layer.src = imagePath;
             layer.classList.remove('hidden');
             hasAnyPart = true;
         } else {
+            layer.src = '';
             layer.classList.add('hidden');
         }
-    });
+    }
 
+    // Рендер слоев рамы (back и front)
+    if (currentBuild.frame) {
+        setLayer('layer-frame-back', currentBuild.frame.imageBack || null);
+        setLayer('layer-frame-front', currentBuild.frame.imageFront || currentBuild.frame.image || null);
+    } else {
+        setLayer('layer-frame-back', null);
+        setLayer('layer-frame-front', null);
+    }
+
+    // Рендер остальных узлов
+    setLayer('layer-wheels', currentBuild.wheels ? currentBuild.wheels.image : null);
+    setLayer('layer-fork', currentBuild.fork ? currentBuild.fork.image : null);
+    setLayer('layer-drivetrain', currentBuild.drivetrain ? currentBuild.drivetrain.image : null); // Исправлен bull -> null
+
+    // Текст-подсказка
     const hint = document.getElementById('viewport-hint');
     if (hint) {
         hint.style.display = hasAnyPart ? 'none' : 'block';
@@ -147,7 +181,6 @@ function openModal(category) {
             selectBtn.className = 'component-select-btn';
             selectBtn.innerText = 'Добавить';
             
-            // Чистый слушатель вместо инлайн onclick
             selectBtn.addEventListener('click', () => {
                 selectComponent(category, item.id);
             });
@@ -178,7 +211,7 @@ document.querySelectorAll('.part-item').forEach(item => {
     });
 });
 
-// Сброс сборки
+// Сброс конфигурации
 document.getElementById('reset-btn').addEventListener('click', () => {
     currentBuild = {
         frame: null,
@@ -193,7 +226,7 @@ document.getElementById('reset-btn').addEventListener('click', () => {
     updateVisualizer();
 });
 
-// Точка входа: начальная инициализация UI
+// Точка входа
 function initApp() {
     calculateTotals();
     updateUI();

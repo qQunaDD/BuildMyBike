@@ -63,10 +63,15 @@
         <section class="canvas-area">
             <div class="bike-viewport">
                 <div class="bike-stage" id="bike-stage">
-                    <!-- Слои рендера деталей: накладываются друг на друга -->
+                    <!-- 1. Самый дальний слой: задние перья рамы -->
+                    <img id="layer-frame-back" class="bike-layer hidden" alt="Перья рамы">
+                    <!-- 2. Колеса (лежат поверх дальних перьев) -->
                     <img id="layer-wheels" class="bike-layer hidden" alt="Колеса">
+                    <!-- 3. Вилка -->
                     <img id="layer-fork" class="bike-layer hidden" alt="Вилка">
-                    <img id="layer-frame" class="bike-layer hidden" alt="Рама">
+                    <!-- 4. Передний треугольник рамы (накрывает шток вилки и колесо спереди) -->
+                    <img id="layer-frame-front" class="bike-layer hidden" alt="Рама">
+                    <!-- 5. Трансмиссия (шатуны и переключатель с нашей стороны) -->
                     <img id="layer-drivetrain" class="bike-layer hidden" alt="Трансмиссия">
                 </div>
                 <p class="viewport-hint" id="viewport-hint">Область визуализации сборки (2D)</p>
