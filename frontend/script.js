@@ -1,33 +1,14 @@
 // 1. БАЗА ДАННЫХ (КАТАЛОГ ДЕТАЛЕЙ)
 const componentsCatalog = {
     frame: [
-        { 
-            id: 'frame-1', 
-            name: 'Dartmoor Hornet Pro', 
-            price: 35000, 
-            weight: 2.5, 
-            headtube: 'tapered', 
-            bbType: 'BSA', 
-            rearAxle: '148x12', 
-            imageBack: 'assets/frame-1-back.png', 
-            imageFront: 'assets/frame-1-front.png', // Добавлено расширение .png
-            wheelSize: 27.5 
-        },
-        { 
-            id: 'frame-2', 
-            name: 'Dartmoor Thunderbird', 
-            price: 85000, 
-            weight: 3.1, 
-            headtube: 'tapered', 
-            bbType: 'BSA', 
-            rearAxle: '148x12', 
-            imageFront: 'assets/dartmoor_thunderbird.png', 
-            wheelSize: 29 
-        }
+        { id: 'frame-1', name: 'Dartmoor Hornet Pro', price: 35000, weight: 2.5, headtube: 'tapered', bbType: 'BSA', rearAxle: '148x12', imageBack: 'assets/frame-1-back.png', imageFront: 'assets/frame-1-front.png', wheelSize: 27.5 },
+        // Добавили разделенные слои для Thunderbird:
+        { id: 'frame-2', name: 'Dartmoor Thunderbird', price: 85000, weight: 3.1, headtube: 'tapered', bbType: 'BSA', rearAxle: '148x12', imageBack: 'assets/frame-2-back.png', imageFront: 'assets/frame-2-front.png', wheelSize: 29 }
     ],
     fork: [
         { id: 'fork-1', name: 'RockShox Lyrik', price: 36000, weight: 2.0, steerer: 'tapered', image: 'assets/fork-1.png', travel: 160, wheelSize: 27.5 },
-        { id: 'fork-2', name: 'RockShox Zeb Ultimate', price: 62000, weight: 2.2, steerer: 'tapered', image: 'assets/rockshox_zeb_ultimate_red.png', travel: 180, wheelSize: 29 },
+        // Обновили путь для вилки Zeb:
+        { id: 'fork-2', name: 'RockShox Zeb Ultimate', price: 62000, weight: 2.2, steerer: 'tapered', image: 'assets/fork-2.png', travel: 180, wheelSize: 29 },
         { id: 'fork-3', name: 'RST Dirt', price: 15000, weight: 2.8, steerer: 'straight', travel: 100, wheelSize: 26, image: 'assets/rst_dirt_.png' }
     ],
     wheels: [
@@ -35,7 +16,8 @@ const componentsCatalog = {
         { id: 'wheel-2', name: 'NoName 29er', price: 12000, weight: 2.4, wheelSize: 29, axleStandard: '135x10' }
     ],
     drivetrain: [
-        { id: 'drivetrain-1', name: 'SHIMANO Deore M8100', price: 17500, weight: 1.9, color: '#17d52d', bbCompatibility: 'BSA', image: 'assets/drivetrain-1.png', gears: 12 }
+        // Трансмиссия теперь тоже разделена на Front и Back:
+        { id: 'drivetrain-1', name: 'SHIMANO Deore M8100', price: 17500, weight: 1.9, bbCompatibility: 'BSA', imageBack: 'assets/drivetrain-1-back.png', imageFront: 'assets/drivetrain-1-front.png', gears: 12 }
     ]
 };
 
@@ -96,37 +78,64 @@ function updateUI() {
 function updateVisualizer() {
     let hasAnyPart = false;
 
+    // Вспомогательная функция. Принимает ID тега <img> и путь к картинке
     function setLayer(id, imagePath) {
+        // Ищем элемент в DOM по его ID
         const layer = document.getElementById(id);
+        // Если элемента нет (например, опечатка в ID), прерываем выполнение функции, чтобы не было ошибок
         if (!layer) return;
 
+        // Если путь к картинке передан (не null и не undefined)
         if (imagePath) {
+            // Подставляем путь в атрибут src
             layer.src = imagePath;
+            // Убираем CSS-класс 'hidden', чтобы картинка появилась на экране
             layer.classList.remove('hidden');
+            // Запоминаем, что на холсте есть хотя бы одна деталь (нужно для отключения текста-подсказки)
             hasAnyPart = true;
         } else {
+            // Если пути нет (деталь не выбрана), стираем src
             layer.src = '';
+            // Вешаем класс 'hidden', чтобы скрыть пустой тег <img>
             layer.classList.add('hidden');
         }
     }
 
-    // Рендер слоев рамы (back и front)
+    // ЛОГИКА РЕНДЕРА РАМЫ
     if (currentBuild.frame) {
+        // Если рама выбрана, передаем путь к заднему слою. Если его вдруг нет, передаем null.
         setLayer('layer-frame-back', currentBuild.frame.imageBack || null);
+        
+        // Передаем путь к переднему слою. 
+        // || currentBuild.frame.image - это защита от дурака. Если у какой-то рамы будет только одно поле image, подставится оно.
         setLayer('layer-frame-front', currentBuild.frame.imageFront || currentBuild.frame.image || null);
     } else {
+        // Если рама не выбрана, прячем оба слоя
         setLayer('layer-frame-back', null);
         setLayer('layer-frame-front', null);
     }
 
-    // Рендер остальных узлов
+    // ЛОГИКА РЕНДЕРА ТРАНСМИССИИ
+    if (currentBuild.drivetrain) {
+        // Передаем кассету на нижний слой
+        setLayer('layer-drivetrain-back', currentBuild.drivetrain.imageBack || null);
+        // Передаем шатуны на верхний слой
+        setLayer('layer-drivetrain-front', currentBuild.drivetrain.imageFront || currentBuild.drivetrain.image || null);
+    } else {
+        // Если трансмиссия не выбрана, прячем оба слоя
+        setLayer('layer-drivetrain-back', null);
+        setLayer('layer-drivetrain-front', null);
+    }
+
+    // ОДНОСЛОЙНЫЕ ДЕТАЛИ
+    // Если колеса выбраны в стейте, передаем их картинку, иначе null
     setLayer('layer-wheels', currentBuild.wheels ? currentBuild.wheels.image : null);
     setLayer('layer-fork', currentBuild.fork ? currentBuild.fork.image : null);
-    setLayer('layer-drivetrain', currentBuild.drivetrain ? currentBuild.drivetrain.image : null); // Исправлен bull -> null
 
-    // Текст-подсказка
+    // УПРАВЛЕНИЕ ПОДСКАЗКОЙ
     const hint = document.getElementById('viewport-hint');
     if (hint) {
+        // Если hasAnyPart истинно (есть детали), применяем display: none. Иначе - display: block.
         hint.style.display = hasAnyPart ? 'none' : 'block';
     }
 }
@@ -142,13 +151,17 @@ function getCompatibleComponents(category) {
 
     return allItems.filter(item => {
         if (category === 'fork') {
-            return item.wheelSize === selectedFrame.wheelSize && item.steerer === selectedFrame.headtube;
+            const matchWheel = !item.wheelSize || item.wheelSize === selectedFrame.wheelSize;
+            const matchSteerer = !item.steerer || item.steerer === selectedFrame.headtube;
+            return matchWheel && matchSteerer;
         }
         if (category === 'wheels') {
-            return item.wheelSize === selectedFrame.wheelSize && item.axleStandard === selectedFrame.rearAxle;
+            const matchWheel = !item.wheelSize || item.wheelSize === selectedFrame.wheelSize;
+            const matchAxle = !item.axleStandard || item.axleStandard === selectedFrame.rearAxle;
+            return matchWheel && matchAxle;
         }
         if (category === 'drivetrain') {
-            return item.bbCompatibility === selectedFrame.bbType;
+            return !item.bbCompatibility || item.bbCompatibility === selectedFrame.bbType;
         }
         return true; 
     });
@@ -205,8 +218,17 @@ modalOverlay.addEventListener('click', (e) => {
 
 document.querySelectorAll('.part-item').forEach(item => {
     const btn = item.querySelector('.add-btn');
-    const category = item.getAttribute('data-part');
+    if (!btn) return;
+
     btn.addEventListener('click', () => {
+        // Проверяем data-part и на самом блоке, и на кнопке
+        const category = item.dataset.part || btn.dataset.part || item.getAttribute('data-part');
+        
+        if (!category || !componentsCatalog[category]) {
+            console.error(`Категория "${category}" не найдена в componentsCatalog! Проверь HTML разметку.`);
+            return;
+        }
+
         openModal(category);
     });
 });
