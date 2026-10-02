@@ -56,6 +56,13 @@
                     </div>
                     <button class="add-btn" id="btn-selected-drivetrain">+</button>
                 </div>
+                <div class="part-item" data-part="brakes">
+                    <div class="part-info">
+                        <span class="part-type">Тормоза</span>
+                        <span class="part-selected-name" id="selected-brakes-name">Не выбрано</span>
+                    </div>
+                    <button class="add-btn" id="btn-selected-brakes">+</button>
+                </div>
             </div>
             <button class="btn-secondary" id="reset-btn">Сбросить конфигурацию</button>
         </aside>
@@ -65,15 +72,17 @@
                 <div class="bike-stage" id="bike-stage">
                     <!-- 1. Самый дальний слой: задние перья рамы -->
                     <img id="layer-frame-back" class="bike-layer hidden" alt="Перья рамы">
-                    <!-- 2. Колеса (лежат поверх дальних перьев) -->
+                    <!-- 2. Тормоза -->
+                    <!-- ПОТОМ УБРАТЬ КОММЕНТАРИЙ <img id="layer-brakes" class="bike-layer hidden" alt="Тормоза"> -->
+                    <!-- 3. Колеса (лежат поверх дальних перьев) -->
                     <img id="layer-wheels" class="bike-layer hidden" alt="Колеса">
-                    <!-- 3. Кассета (лежит на заднем колесе, но под правым пером рамы) -->
+                    <!-- 4. Кассета (лежит на заднем колесе, но под правым пером рамы) -->
                     <img id="layer-drivetrain-back" class="bike-layer hidden" alt="Кассета">
-                    <!-- 4. Вилка -->
+                    <!-- 5. Вилка -->
                     <img id="layer-fork" class="bike-layer hidden" alt="Вилка">
-                    <!-- 5. Передний треугольник рамы (накрывает шток вилки и колесо спереди) -->
+                    <!-- 6. Передний треугольник рамы (накрывает шток вилки и колесо спереди) -->
                     <img id="layer-frame-front" class="bike-layer hidden" alt="Рама">
-                    <!-- 6. Трансмиссия (шатуны и переключатель с нашей стороны) -->
+                    <!-- 7. Трансмиссия (шатуны и переключатель с нашей стороны) -->
                     <img id="layer-drivetrain-front" class="bike-layer hidden" alt="Шатуны">
                 </div>
                 <p class="viewport-hint" id="viewport-hint">Область визуализации сборки (2D)</p>
@@ -91,6 +100,10 @@
                 <div class="summary-row">
                     <span>Размер колёс:</span>
                     <strong id="summary-wheels">-</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Тормоза:</span>
+                    <strong id="summary-brakes">-</strong>
                 </div>
                 <div class="summary-row">
                     <span>Расчётный вес:</span>

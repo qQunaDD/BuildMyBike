@@ -7,7 +7,6 @@ const componentsCatalog = {
     ],
     fork: [
         { id: 'fork-1', name: 'RockShox Lyrik', price: 36000, weight: 2.0, steerer: 'tapered', image: 'assets/fork-1.png', travel: 160, wheelSize: 27.5 },
-        // Обновили путь для вилки Zeb:
         { id: 'fork-2', name: 'RockShox Zeb Ultimate', price: 62000, weight: 2.2, steerer: 'tapered', image: 'assets/fork-2.png', travel: 180, wheelSize: 29 },
         { id: 'fork-3', name: 'RST Dirt', price: 15000, weight: 2.8, steerer: 'straight', travel: 100, wheelSize: 26, image: 'assets/rst_dirt_.png' }
     ],
@@ -18,6 +17,10 @@ const componentsCatalog = {
     drivetrain: [
         // Трансмиссия теперь тоже разделена на Front и Back:
         { id: 'drivetrain-1', name: 'SHIMANO Deore M8100', price: 17500, weight: 1.9, bbCompatibility: 'BSA', imageBack: 'assets/drivetrain-1-back.png', imageFront: 'assets/drivetrain-1-front.png', gears: 12 }
+    ],
+    brakes: [
+        { id: 'brakes-1', name: 'Magura MT7', price: 38000, weight: 0.51, rotorSize: 203, image: 'assets/brakes-1.png' },
+        { id: 'brakes-2', name: 'Shimano XT M8120', price: 29000, weight: 0.61, rotorSize: 203, image: 'assets/brakes-2.png' }
     ]
 };
 
@@ -27,6 +30,7 @@ let currentBuild = {
     fork: null,
     wheels: null,
     drivetrain: null,
+    brakes: null,
     totalWeight: 0,
     totalPrice: 0
 };
@@ -67,9 +71,11 @@ function updateUI() {
     document.getElementById('selected-fork-name').innerText = currentBuild.fork ? currentBuild.fork.name : 'Не выбрано';
     document.getElementById('selected-wheels-name').innerText = currentBuild.wheels ? currentBuild.wheels.name : 'Не выбрано';
     document.getElementById('selected-drivetrain-name').innerText = currentBuild.drivetrain ? currentBuild.drivetrain.name : 'Не выбрано';
+    document.getElementById('selected-brakes-name').innerText = currentBuild.brakes ? currentBuild.brakes.name : 'Не выбрано';
 
     document.getElementById('summary-frame').innerText = currentBuild.frame ? currentBuild.frame.name : '-';
     document.getElementById('summary-wheels').innerText = currentBuild.wheels ? `${currentBuild.wheels.wheelSize}"` : '-';
+    document.getElementById('summary-brakes').innerText = currentBuild.brakes ? currentBuild.brakes.name : '-';
     document.getElementById('summary-weight').innerText = `~ ${currentBuild.totalWeight.toFixed(1)} кг`;
     document.getElementById('total-price').innerText = `${currentBuild.totalPrice.toLocaleString('ru-RU')} ₽`;
 }
@@ -131,6 +137,7 @@ function updateVisualizer() {
     // Если колеса выбраны в стейте, передаем их картинку, иначе null
     setLayer('layer-wheels', currentBuild.wheels ? currentBuild.wheels.image : null);
     setLayer('layer-fork', currentBuild.fork ? currentBuild.fork.image : null);
+    setLayer('layer-brakes', currentBuild.brakes ? currentBuild.brakes.image : null);
 
     // УПРАВЛЕНИЕ ПОДСКАЗКОЙ
     const hint = document.getElementById('viewport-hint');
@@ -240,6 +247,7 @@ document.getElementById('reset-btn').addEventListener('click', () => {
         fork: null,
         wheels: null,
         drivetrain: null,
+        brakes: null,
         totalWeight: 0,
         totalPrice: 0
     };
