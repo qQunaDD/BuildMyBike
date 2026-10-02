@@ -14,6 +14,11 @@ const componentsCatalog = {
         { id: 'wheel-1', name: 'DT Swiss EX1700', price: 40000, weight: 1.8, image: 'assets/wheels-1.png', wheelSize: 27.5, axleStandard: '148x12' },
         { id: 'wheel-2', name: 'NoName 29er', price: 12000, weight: 2.4, wheelSize: 29, axleStandard: '135x10' }
     ],
+    tires: [
+        { id: 'tire-1', name: 'Maxxis Assegai / Minion DHR II', price: 11000, weight: 2.2, width: 2.4, image: 'assets/tire-1.png', diameter: 27.5 },
+        { id: 'tire-2', name: 'Maxxis Assegai / Minion DHR II', price: 12000, weight: 2.4, width: 2.5, image: 'assets/tire-2.png', diameter: 29 },
+        { id: 'tire-3', name: 'Schwalbe Magic Mary / Big Betty', price: 13500, weight: 2.3, width: 2.4, image: 'assets/tire-3.png', diameter: 29 }
+    ],
     drivetrain: [
         // Трансмиссия теперь тоже разделена на Front и Back:
         { id: 'drivetrain-1', name: 'SHIMANO Deore M8100', price: 17500, weight: 1.9, bbCompatibility: 'BSA', imageBack: 'assets/drivetrain-1-back.png', imageFront: 'assets/drivetrain-1-front.png', gears: 12 }
@@ -70,11 +75,13 @@ function updateUI() {
     document.getElementById('selected-frame-name').innerText = currentBuild.frame ? currentBuild.frame.name : 'Не выбрано';
     document.getElementById('selected-fork-name').innerText = currentBuild.fork ? currentBuild.fork.name : 'Не выбрано';
     document.getElementById('selected-wheels-name').innerText = currentBuild.wheels ? currentBuild.wheels.name : 'Не выбрано';
+    document.getElementById('selected-tires-name').innerText = currentBuild.tires ? currentBuild.tires.name : 'Не выбрано';
     document.getElementById('selected-drivetrain-name').innerText = currentBuild.drivetrain ? currentBuild.drivetrain.name : 'Не выбрано';
     document.getElementById('selected-brakes-name').innerText = currentBuild.brakes ? currentBuild.brakes.name : 'Не выбрано';
 
     document.getElementById('summary-frame').innerText = currentBuild.frame ? currentBuild.frame.name : '-';
     document.getElementById('summary-wheels').innerText = currentBuild.wheels ? `${currentBuild.wheels.wheelSize}"` : '-';
+    document.getElementById('summary-tires').innerText = currentBuild.tires ? currentBuild.tires.name : '-';
     document.getElementById('summary-brakes').innerText = currentBuild.brakes ? currentBuild.brakes.name : '-';
     document.getElementById('summary-weight').innerText = `~ ${currentBuild.totalWeight.toFixed(1)} кг`;
     document.getElementById('total-price').innerText = `${currentBuild.totalPrice.toLocaleString('ru-RU')} ₽`;
@@ -170,6 +177,10 @@ function getCompatibleComponents(category) {
         if (category === 'drivetrain') {
             return !item.bbCompatibility || item.bbCompatibility === selectedFrame.bbType;
         }
+        if (category === 'tires') {
+            const targetWheelSize = currentBuild.wheels ? currentBuild.wheels.wheelSize : selectedFrame.wheelSize;
+            return item.diameter === targetWheelSize;
+        }
         return true; 
     });
 }
@@ -246,6 +257,7 @@ document.getElementById('reset-btn').addEventListener('click', () => {
         frame: null,
         fork: null,
         wheels: null,
+        tires: null,
         drivetrain: null,
         brakes: null,
         totalWeight: 0,
