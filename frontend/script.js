@@ -47,6 +47,7 @@ function selectComponent(category, componentId) {
     if (selectedItem) {
         currentBuild[category] = selectedItem;
         
+        validateCompability();
         calculateTotals();
         updateUI();
         updateVisualizer();
@@ -276,3 +277,34 @@ function initApp() {
 }
 
 document.addEventListener('DOMContentLoaded', initApp);
+
+function validateCompability() {
+    const frame = currentBuild.frame;
+    if (!frame) return;
+    
+    const fork = currentBuild.fork;
+    if (!fork) return;
+
+    if (currentBuild.fork && currentBuild.fork.wheelSize !== currentBuild.frame.wheelSize) {
+        console.warn('Вмлка не подходит к новой раме, сбрасываем!');
+        currentBuild.fork = null;
+    }
+
+    const wheels = currentBuild.wheels;
+    if (!wheels) return;
+
+    if (currentBuild.wheels && currentBuild.wheels.wheelSize !== currentBuild.frame.wheelSize) {
+        console.warn('Колёся не подходит к новой раме, сбрасываем!');
+        currentBuild.wheels = null;
+    }
+
+    const tires = currentBuild.tires;
+    if (!tires) return;
+
+    if (currentBuild.tires && currentBuild.tires.diameter !== currentBuild.frame.wheelSize) {
+        console.warn('Покрышки не подходит к новой раме, сбрасываем!');
+        currentBuild.tires = null;
+    }
+
+    
+}
