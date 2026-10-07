@@ -1,9 +1,22 @@
 // 1. БАЗА ДАННЫХ (КАТАЛОГ ДЕТАЛЕЙ)
 const componentsCatalog = {
     frame: [
-        { id: 'frame-1', name: 'Dartmoor Hornet Pro', price: 35000, weight: 2.5, headtube: 'tapered', bbType: 'BSA', rearAxle: '148x12', imageBack: 'assets/frame-1-back.png', imageFront: 'assets/frame-1-front.png', wheelSize: 27.5 },
+        { id: 'frame-1', name: 'Dartmoor Hornet Pro', price: 35000, weight: 2.5, headtube: 'tapered', bbType: 'BSA', rearAxle: '148x12', imageBack: 'assets/frame-1-back.png', imageFront: 'assets/frame-1-front.png', wheelSize: 27.5, 
+            colors: [
+            { id: 'Cosmic', name: "Glossy Cosmic", hex: '#604cfe', imageBack: "assets/frame-1-back-cosmic.png", imageFront: "assets/frame-1-front-cosmic.png" },
+            { id: 'Dragon-Green', name: "Glossy Dragon Green", hex: '#238200', imageBack: "assets/frame-1-back-dragon_green.png", imageFront: "assets/frame-1-front-dragon_green.png" },
+            { id: 'Black', name: "Matt Black", hex: '#242424', imageBack: "assets/frame-1-back-black.png", iamgeFront: "assets/frame-1-front-black.png" },
+            { id: 'Silver', name: "Silver", hex: '#b8b8b8', imageBack: "assets/frame-1-back.png", imageFront: "assets/frame-1-front.png" }
+        ]},
+
         // Добавили разделенные слои для Thunderbird:
-        { id: 'frame-2', name: 'Dartmoor Thunderbird', price: 85000, weight: 3.1, headtube: 'tapered', bbType: 'BSA', rearAxle: '148x12', imageBack: 'assets/frame-2-back.png', imageFront: 'assets/frame-2-front.png', wheelSize: 29 }
+        { id: 'frame-2', name: 'Dartmoor Thunderbird', price: 85000, weight: 3.1, headtube: 'tapered', bbType: 'BSA', rearAxle: '148x12', imageBack: 'assets/frame-2-back.png', imageFront: 'assets/frame-2-front.png', wheelSize: 29, 
+            colors: [
+                { id: "Cosmic", name: "Glossy Cosmic", hex: '#604cfe', imageBack: "assets/frame-2-back-cosmic.png", imageFront: "assets/frame-2-front-cosmic.png" },
+                { id: "Dragon-Green", name: "Glossy Dragon Green", hex: '#238200', imageBack: "assets/frame-2-back-dragon_green.png", imageFront: "assets/frame-2-front-dragon_green.png" },
+                { id: "Midnight-Black", name: "Matt Midnight Black", hex: '#242424', imageBack: "assets/frame-2-back.png", imageFront: "assets/frame-2-front.png" }
+            ]
+         }
     ],
     fork: [
         { id: 'fork-1', name: 'RockShox Lyrik', price: 36000, weight: 2.0, steerer: 'tapered', image: 'assets/fork-1.png', travel: 160, wheelSize: 27.5 },
@@ -36,6 +49,7 @@ let currentBuild = {
     wheels: null,
     drivetrain: null,
     brakes: null,
+    frameColor: null,
     totalWeight: 0,
     totalPrice: 0
 };
@@ -46,7 +60,11 @@ function selectComponent(category, componentId) {
 
     if (selectedItem) {
         currentBuild[category] = selectedItem;
+        if (category === `frame` && selectedItem.colors) {
+            currentBuild.frameColor = selectedItem.colors[0];
+        }
         
+        RenderColorPalette();
         validateCompability();
         calculateTotals();
         updateUI();
@@ -118,11 +136,12 @@ function updateVisualizer() {
     // ЛОГИКА РЕНДЕРА РАМЫ
     if (currentBuild.frame) {
         // Если рама выбрана, передаем путь к заднему слою. Если его вдруг нет, передаем null.
-        setLayer('layer-frame-back', currentBuild.frame.imageBack || null);
-        
+        const frameBack = currentBuild.frameColor ? currentBuild.frameColor.imageBack : currentBuild.frame.imageBack;        
         // Передаем путь к переднему слою. 
         // || currentBuild.frame.image - это защита от дурака. Если у какой-то рамы будет только одно поле image, подставится оно.
-        setLayer('layer-frame-front', currentBuild.frame.imageFront || currentBuild.frame.image || null);
+        const frameFront = currentBuild.frameColor ? currentBuild.frameColor.imageFront : currentBuild.frame.imageFront;
+        setLayer('layer-frame-back', frameBack || null);
+        setLayer('layer-frame-front', frameFront || null);
     } else {
         // Если рама не выбрана, прячем оба слоя
         setLayer('layer-frame-back', null);
@@ -255,6 +274,7 @@ document.querySelectorAll('.part-item').forEach(item => {
 // Сброс конфигурации
 document.getElementById('reset-btn').addEventListener('click', () => {
     currentBuild = {
+        frameColor: null,
         frame: null,
         fork: null,
         wheels: null,
@@ -264,6 +284,7 @@ document.getElementById('reset-btn').addEventListener('click', () => {
         totalWeight: 0,
         totalPrice: 0
     };
+    RenderColorPalette();
     calculateTotals();
     updateUI();
     updateVisualizer();
@@ -271,6 +292,7 @@ document.getElementById('reset-btn').addEventListener('click', () => {
 
 // Точка входа
 function initApp() {
+    RenderColorPalette();
     calculateTotals();
     updateUI();
     updateVisualizer();
@@ -307,4 +329,36 @@ function validateCompability() {
     }
 
     
+}
+
+function RenderColorPalette() {
+    const paletteContainer = document.getElementById('frame-colors-palette');
+    if (!paletteContainer) return;
+
+    if (!currentBuild.frame || !currentBuild.frame.colors) {
+        paletteContainer.classList.add('hidden');
+        paletteContainer.innerHTML = '';
+        return;
+    }
+
+    paletteContainer.classList.remove('hidden');
+    paletteContainer.innerHTML = '';
+
+    currentBuild.frame.colors.forEach(color => {
+        const dot = document.createElement('div');
+        dot.className = 'color-swatch';
+        dot.style.backgroundColor = color.hex;
+
+        if (currentBuild.frameColor && color.id === currentBuild.frameColor.id) {
+            dot.classList.add('active');
+        }
+
+        dot.addEventListener('click', () => {
+            currentBuild.frameColor = color;
+            updateVisualizer();
+            RenderColorPalette();
+        });
+
+        paletteContainer.appendChild(dot);
+    });
 }

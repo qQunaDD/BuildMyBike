@@ -405,3 +405,23 @@ body {
 .component-select-btn:hover {
     background: var(--accent-hover);
 }
+
+.frame-colors-palette {
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.color-swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    cursor: pointer;
+    transition: 0.2s;
+    border-color: 0.2s;
+}
+
+.color-swatch.active {
+    border-color: var(--accent-color);
+    transform: scale(1.15);
+}
