@@ -1,22 +1,25 @@
 // 1. БАЗА ДАННЫХ (КАТАЛОГ ДЕТАЛЕЙ)
 const componentsCatalog = {
     frame: [
-        { id: 'frame-1', name: 'Dartmoor Hornet Pro', price: 35000, weight: 2.5, headtube: 'tapered', bbType: 'BSA', rearAxle: '148x12', imageBack: 'assets/frame-1-back.png', imageFront: 'assets/frame-1-front.png', wheelSize: 27.5, 
+        {
+            id: 'frame-1', name: 'Dartmoor Hornet Pro', price: 35000, weight: 2.5, headtube: 'tapered', bbType: 'BSA', rearAxle: '148x12', imageBack: 'assets/frame-1-back.png', imageFront: 'assets/frame-1-front.png', wheelSize: 27.5,
             colors: [
-            { id: 'Cosmic', name: "Glossy Cosmic", hex: '#604cfe', imageBack: "assets/frame-1-back-cosmic.png", imageFront: "assets/frame-1-front-cosmic.png" },
-            { id: 'Dragon-Green', name: "Glossy Dragon Green", hex: '#238200', imageBack: "assets/frame-1-back-dragon_green.png", imageFront: "assets/frame-1-front-dragon_green.png" },
-            { id: 'Black', name: "Matt Black", hex: '#242424', imageBack: "assets/frame-1-back-black.png", iamgeFront: "assets/frame-1-front-black.png" },
-            { id: 'Silver', name: "Silver", hex: '#b8b8b8', imageBack: "assets/frame-1-back.png", imageFront: "assets/frame-1-front.png" }
-        ]},
+                { id: 'Cosmic', name: "Glossy Cosmic", hex: '#604cfe', imageBack: "assets/frame-1-back-cosmic.png", imageFront: "assets/frame-1-front-cosmic.png" },
+                { id: 'Dragon-Green', name: "Glossy Dragon Green", hex: '#238200', imageBack: "assets/frame-1-back-dragon_green.png", imageFront: "assets/frame-1-front-dragon_green.png" },
+                { id: 'Black', name: "Matt Black", hex: '#242424', imageBack: "assets/frame-1-back-black.png", iamgeFront: "assets/frame-1-front-black.png" },
+                { id: 'Silver', name: "Silver", hex: '#b8b8b8', imageBack: "assets/frame-1-back.png", imageFront: "assets/frame-1-front.png" }
+            ]
+        },
 
         // Добавили разделенные слои для Thunderbird:
-        { id: 'frame-2', name: 'Dartmoor Thunderbird', price: 85000, weight: 3.1, headtube: 'tapered', bbType: 'BSA', rearAxle: '148x12', imageBack: 'assets/frame-2-back.png', imageFront: 'assets/frame-2-front.png', wheelSize: 29, 
+        {
+            id: 'frame-2', name: 'Dartmoor Thunderbird', price: 85000, weight: 3.1, headtube: 'tapered', bbType: 'BSA', rearAxle: '148x12', imageBack: 'assets/frame-2-back.png', imageFront: 'assets/frame-2-front.png', wheelSize: 29,
             colors: [
                 { id: "Cosmic", name: "Glossy Cosmic", hex: '#604cfe', imageBack: "assets/frame-2-back-cosmic.png", imageFront: "assets/frame-2-front-cosmic.png" },
                 { id: "Dragon-Green", name: "Glossy Dragon Green", hex: '#238200', imageBack: "assets/frame-2-back-dragon_green.png", imageFront: "assets/frame-2-front-dragon_green.png" },
                 { id: "Midnight-Black", name: "Matt Midnight Black", hex: '#242424', imageBack: "assets/frame-2-back.png", imageFront: "assets/frame-2-front.png" }
             ]
-         }
+        }
     ],
     fork: [
         { id: 'fork-1', name: 'RockShox Lyrik', price: 36000, weight: 2.0, steerer: 'tapered', image: 'assets/fork-1.png', travel: 160, wheelSize: 27.5 },
@@ -63,7 +66,7 @@ function selectComponent(category, componentId) {
         if (category === `frame` && selectedItem.colors) {
             currentBuild.frameColor = selectedItem.colors[0];
         }
-        
+
         RenderColorPalette();
         validateCompability();
         calculateTotals();
@@ -104,6 +107,25 @@ function updateUI() {
     document.getElementById('summary-brakes').innerText = currentBuild.brakes ? currentBuild.brakes.name : '-';
     document.getElementById('summary-weight').innerText = `~ ${currentBuild.totalWeight.toFixed(1)} кг`;
     document.getElementById('total-price').innerText = `${currentBuild.totalPrice.toLocaleString('ru-RU')} ₽`;
+
+    const updateButtonState = (btnId, item) => {
+        const btn = document.getElementById(btnId);
+        if (!btn) return;
+        if (item) {
+            btn.innerText = '✕';
+            btn.classList.add('remove-btn');
+        } else {
+            btn.innerText = '+';
+            btn.classList.remove('remove-btn');
+        }
+    };
+
+    updateButtonState('btn-select-frame', currentBuild.frame);
+    updateButtonState('btn-select-fork', currentBuild.fork);
+    updateButtonState('btn-select-wheels', currentBuild.wheels);
+    updateButtonState('btn-select-tires', currentBuild.tires);
+    updateButtonState('btn-select-drivetrain', currentBuild.drivetrain);
+    updateButtonState('btn-select-brakes', currentBuild.brakes);
 }
 
 // 6. СЛОЙ 2D-ВИЗУАЛИЗАЦИИ
@@ -136,7 +158,7 @@ function updateVisualizer() {
     // ЛОГИКА РЕНДЕРА РАМЫ
     if (currentBuild.frame) {
         // Если рама выбрана, передаем путь к заднему слою. Если его вдруг нет, передаем null.
-        const frameBack = currentBuild.frameColor ? currentBuild.frameColor.imageBack : currentBuild.frame.imageBack;        
+        const frameBack = currentBuild.frameColor ? currentBuild.frameColor.imageBack : currentBuild.frame.imageBack;
         // Передаем путь к переднему слою. 
         // || currentBuild.frame.image - это защита от дурака. Если у какой-то рамы будет только одно поле image, подставится оно.
         const frameFront = currentBuild.frameColor ? currentBuild.frameColor.imageFront : currentBuild.frame.imageFront;
@@ -179,11 +201,16 @@ function getCompatibleComponents(category) {
     const allItems = componentsCatalog[category];
     const selectedFrame = currentBuild.frame;
 
-    if (!selectedFrame || category === 'frame') {
+    if (!selectedFrame && category !== 'frame') {
         return allItems;
     }
 
     return allItems.filter(item => {
+        if (category === 'frame') {
+            const matchFork = !currentBuild.fork || item.wheelSize === currentBuild.fork.wheelSize;
+            const matchWheels = !currentBuild.wheels || item.wheelSize === currentBuild.wheels.wheelSize;
+            return matchFork && matchWheels;
+        }
         if (category === 'fork') {
             const matchWheel = !item.wheelSize || item.wheelSize === selectedFrame.wheelSize;
             const matchSteerer = !item.steerer || item.steerer === selectedFrame.headtube;
@@ -201,7 +228,7 @@ function getCompatibleComponents(category) {
             const targetWheelSize = currentBuild.wheels ? currentBuild.wheels.wheelSize : selectedFrame.wheelSize;
             return item.diameter === targetWheelSize;
         }
-        return true; 
+        return true;
     });
 }
 
@@ -231,7 +258,7 @@ function openModal(category) {
             const selectBtn = document.createElement('button');
             selectBtn.className = 'component-select-btn';
             selectBtn.innerText = 'Добавить';
-            
+
             selectBtn.addEventListener('click', () => {
                 selectComponent(category, item.id);
             });
@@ -261,13 +288,17 @@ document.querySelectorAll('.part-item').forEach(item => {
     btn.addEventListener('click', () => {
         // Проверяем data-part и на самом блоке, и на кнопке
         const category = item.dataset.part || btn.dataset.part || item.getAttribute('data-part');
-        
+
         if (!category || !componentsCatalog[category]) {
             console.error(`Категория "${category}" не найдена в componentsCatalog! Проверь HTML разметку.`);
             return;
         }
 
-        openModal(category);
+        if (currentBuild[category]) {
+            removeComponent(category);
+        } else {
+            openModal(category);
+        }
     });
 });
 
@@ -303,7 +334,7 @@ document.addEventListener('DOMContentLoaded', initApp);
 function validateCompability() {
     const frame = currentBuild.frame;
     if (!frame) return;
-    
+
     const fork = currentBuild.fork;
     if (!fork) return;
 
@@ -328,7 +359,7 @@ function validateCompability() {
         currentBuild.tires = null;
     }
 
-    
+
 }
 
 function RenderColorPalette() {
@@ -361,4 +392,22 @@ function RenderColorPalette() {
 
         paletteContainer.appendChild(dot);
     });
+}
+
+function removeComponent(category) {
+    if (!currentBuild[category]) return;
+
+    currentBuild[category] = null;
+
+    if (category === 'frame') {
+        currentBuild.frameColor = null;
+        currentBuild.fork = null;
+        currentBuild.wheels = null;
+        currentBuild.tires = null;
+    }
+
+    calculateTotals();
+    updateUI();
+    updateVisualizer();
+    RenderColorPalette();
 }

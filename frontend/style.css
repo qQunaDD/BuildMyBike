@@ -406,6 +406,16 @@ body {
     background: var(--accent-hover);
 }
 
+.add-btn.remove-btn {
+    background: #ef4444;
+    color: white;
+}
+
+.add-btn.remove-btn:hover {
+    background: #dc2626;
+}
+
+
 .frame-colors-palette {
     gap: 8px;
     margin-top: 8px;
