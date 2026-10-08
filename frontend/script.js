@@ -6,7 +6,7 @@ const componentsCatalog = {
             colors: [
                 { id: 'Cosmic', name: "Glossy Cosmic", hex: '#604cfe', imageBack: "assets/frame-1-back-cosmic.png", imageFront: "assets/frame-1-front-cosmic.png" },
                 { id: 'Dragon-Green', name: "Glossy Dragon Green", hex: '#238200', imageBack: "assets/frame-1-back-dragon_green.png", imageFront: "assets/frame-1-front-dragon_green.png" },
-                { id: 'Black', name: "Matt Black", hex: '#242424', imageBack: "assets/frame-1-back-black.png", iamgeFront: "assets/frame-1-front-black.png" },
+                { id: 'Black', name: "Matt Black", hex: '#242424', imageBack: "assets/frame-1-back-black.png", imageFront: "assets/frame-1-front-black.png" },
                 { id: 'Silver', name: "Silver", hex: '#b8b8b8', imageBack: "assets/frame-1-back.png", imageFront: "assets/frame-1-front.png" }
             ]
         },
@@ -16,8 +16,8 @@ const componentsCatalog = {
             id: 'frame-2', name: 'Dartmoor Thunderbird', price: 85000, weight: 3.1, headtube: 'tapered', bbType: 'BSA', rearAxle: '148x12', imageBack: 'assets/frame-2-back.png', imageFront: 'assets/frame-2-front.png', wheelSize: 29,
             colors: [
                 { id: "Cosmic", name: "Glossy Cosmic", hex: '#604cfe', imageBack: "assets/frame-2-back-cosmic.png", imageFront: "assets/frame-2-front-cosmic.png" },
-                { id: "Dragon-Green", name: "Glossy Dragon Green", hex: '#238200', imageBack: "assets/frame-2-back-dragon_green.png", imageFront: "assets/frame-2-front-dragon_green.png" },
-                { id: "Midnight-Black", name: "Matt Midnight Black", hex: '#242424', imageBack: "assets/frame-2-back.png", imageFront: "assets/frame-2-front.png" }
+                { id: "Dragon-Green", name: "Glossy Dragon Green", hex: '#238200', imageBack: "assets/frame-2-back-dragon-green.png", imageFront: "assets/frame-2-front-dragon-green.png" },
+                { id: "Midnight-Black", name: "Matt Midnight Black", hex: '#242424', imageBack: "assets/frame-2-back-black.png", imageFront: "assets/frame-2-front-black.png" }
             ]
         }
     ],
