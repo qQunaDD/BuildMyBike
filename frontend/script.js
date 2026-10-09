@@ -23,12 +23,13 @@ const componentsCatalog = {
     ],
     fork: [
         { id: 'fork-1', name: 'RockShox Lyrik', price: 36000, weight: 2.0, steerer: 'tapered', image: 'assets/fork-1.png', travel: 160, wheelSize: 27.5 },
-        { id: 'fork-2', name: 'RockShox Zeb Ultimate', price: 62000, weight: 2.2, steerer: 'tapered', image: 'assets/fork-2.png', travel: 180, wheelSize: 29 },
+        { id: 'fork-2', name: 'RockShox Zeb Ultimate Red', price: 62000, weight: 2.2, steerer: 'tapered', image: 'assets/fork-2.png', travel: 180, wheelSize: 29 },
         { id: 'fork-3', name: 'RST Dirt', price: 15000, weight: 2.8, steerer: 'straight', travel: 100, wheelSize: 26, image: 'assets/rst_dirt_.png' }
     ],
     wheels: [
-        { id: 'wheel-1', name: 'DT Swiss EX1700', price: 40000, weight: 1.8, image: 'assets/wheels-1.png', wheelSize: 27.5, axleStandard: '148x12' },
-        { id: 'wheel-2', name: 'NoName 29er', price: 12000, weight: 2.4, wheelSize: 29, axleStandard: '135x10' }
+        { id: 'wheel-1', name: 'DT Swiss EX1700 Mullet', price: 40000, weight: 1.8, image: 'assets/wheels-1.png', wheelSizeRear: 27.5, wheelSizeFront: 29, wheelSize: 27.5, isMullet: true, axleStandard: '148x12' },
+        { id: 'wheel-2', name: 'DT Swiss FR541 29"', price: 12000, weight: 2.4, image: 'assets/wheels-2.png', wheelSize: 29, axleStandard: '148x12' },
+        { id: 'wheel-3', name: 'Hope Fortus 30 29"', price: 12000, weight: 2.4, image: 'assets/wheels-3.png', wheelSize: 29, axleStandard: '148x12' }
     ],
     tires: [
         { id: 'tire-1', name: 'Maxxis Assegai / Minion DHR II', price: 11000, weight: 2.2, width: 2.4, image: 'assets/tire-1.png', diameter: 27.5 },
@@ -207,8 +208,8 @@ function getCompatibleComponents(category) {
 
     return allItems.filter(item => {
         if (category === 'frame') {
-            const matchFork = !currentBuild.fork || item.wheelSize === currentBuild.fork.wheelSize;
-            const matchWheels = !currentBuild.wheels || item.wheelSize === currentBuild.wheels.wheelSize;
+            const matchFork = !currentBuild.fork || item.wheelSize === currentBuild.fork.wheelSizeFront || item.wheelSize === currentBuild.wheels.wheelSize;
+            const matchWheels = !currentBuild.wheels || (item.wheelSize === currentBuild.wheels.wheelSizeFront || item.wheelSize === currentBuild.wheels.wheelSize && (!currentBuild.wheels.axleStandard || item.rearAxle === currentBuild.wheels.axleStandard));
             return matchFork && matchWheels;
         }
         if (category === 'fork') {
@@ -304,6 +305,7 @@ document.querySelectorAll('.part-item').forEach(item => {
 
 // Сброс конфигурации
 document.getElementById('reset-btn').addEventListener('click', () => {
+    localStorage.removeItem('BuildMyBikeState');
     currentBuild = {
         frameColor: null,
         frame: null,
@@ -323,6 +325,7 @@ document.getElementById('reset-btn').addEventListener('click', () => {
 
 // Точка входа
 function initApp() {
+    loadSavedBuild();
     RenderColorPalette();
     calculateTotals();
     updateUI();
@@ -339,7 +342,7 @@ function validateCompability() {
     if (!fork) return;
 
     if (currentBuild.fork && currentBuild.fork.wheelSize !== currentBuild.frame.wheelSize) {
-        console.warn('Вмлка не подходит к новой раме, сбрасываем!');
+        console.warn('Вилка не подходит к новой раме, сбрасываем!');
         currentBuild.fork = null;
     }
 
@@ -347,7 +350,7 @@ function validateCompability() {
     if (!wheels) return;
 
     if (currentBuild.wheels && currentBuild.wheels.wheelSize !== currentBuild.frame.wheelSize) {
-        console.warn('Колёся не подходит к новой раме, сбрасываем!');
+        console.warn('Колёса не подходит к новой раме, сбрасываем!');
         currentBuild.wheels = null;
     }
 
@@ -355,7 +358,7 @@ function validateCompability() {
     if (!tires) return;
 
     if (currentBuild.tires && currentBuild.tires.diameter !== currentBuild.frame.wheelSize) {
-        console.warn('Покрышки не подходит к новой раме, сбрасываем!');
+        console.warn('Покрышки не подходят к новой раме, сбрасываем!');
         currentBuild.tires = null;
     }
 
@@ -411,3 +414,37 @@ function removeComponent(category) {
     updateVisualizer();
     RenderColorPalette();
 }
+
+function saveBuild() {
+    if (!currentBuild.frame) {
+        alert('Сначала выберите хотя бы раму!'); 
+    return;
+}
+    const jsonString = JSON.stringify(currentBuild);
+    localStorage.setItem('BuildMyBikeState', JSON.stringify(currentBuild));
+
+    actionBtn.innerText = '✓ Сохранено!';
+    actionBtn.style.backgroundColor = '#22c55e';
+
+        setTimeout(() => {
+        actionBtn.innerText = 'Сохранить сборку';
+        actionBtn.style.backgroundColor = '';
+    }, 2000);
+
+}
+
+const actionBtn = document.getElementById('save-build-btn');
+
+function loadSavedBuild() {
+    const rawData = localStorage.getItem('BuildMyBikeState');
+    if (!rawData) return;
+    
+    try {
+        currentBuild = JSON.parse(rawData);
+    } catch (error) {
+        console.error('Ошибка парсинга сохранения:', error);
+    }
+}
+
+
+actionBtn.addEventListener('click', saveBuild);
