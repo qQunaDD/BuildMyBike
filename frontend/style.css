@@ -235,10 +235,12 @@ body {
     justify-content: space-between;
     font-size: 0.9rem;
     color: var(--text-muted);
+    gap: 12px;
 }
 
 .summary-row strong {
     color: var(--text-main);
+    text-align: right;
 }
 
 .price-box {

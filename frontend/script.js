@@ -104,8 +104,8 @@ function updateUI() {
 
     document.getElementById('summary-frame').innerText = currentBuild.frame ? currentBuild.frame.name : '-';
     document.getElementById('summary-wheels').innerText = currentBuild.wheels ? `${currentBuild.wheels.wheelSize}"` : '-';
-    document.getElementById('summary-tires').innerText = currentBuild.tires ? currentBuild.tires.name : '-';
-    document.getElementById('summary-brakes').innerText = currentBuild.brakes ? currentBuild.brakes.name : '-';
+    document.getElementById('summary-tires').innerText = currentBuild.tires ? `${currentBuild.tires.name} (${currentBuild.tires.width}")` : '-';
+    document.getElementById('summary-brakes').innerText = currentBuild.brakes ? `${currentBuild.brakes.name} (${currentBuild.brakes.rotorSize} мм)` : '-';
     document.getElementById('summary-weight').innerText = `~ ${currentBuild.totalWeight.toFixed(1)} кг`;
     document.getElementById('total-price').innerText = `${currentBuild.totalPrice.toLocaleString('ru-RU')} ₽`;
 
@@ -208,8 +208,9 @@ function getCompatibleComponents(category) {
 
     return allItems.filter(item => {
         if (category === 'frame') {
-            const matchFork = !currentBuild.fork || item.wheelSize === currentBuild.fork.wheelSizeFront || item.wheelSize === currentBuild.wheels.wheelSize;
-            const matchWheels = !currentBuild.wheels || (item.wheelSize === currentBuild.wheels.wheelSizeFront || item.wheelSize === currentBuild.wheels.wheelSize && (!currentBuild.wheels.axleStandard || item.rearAxle === currentBuild.wheels.axleStandard));
+            const matchFork = !currentBuild.fork || item.wheelSize === currentBuild.fork.wheelSize;
+            const rearWheelSize = currentBuild.wheels ? (currentBuild.wheels.wheelSizeRear || currentBuild.wheels.wheelSize) : null;
+            const matchWheels = !currentBuild.wheels || (item.wheelSize === rearWheelSize && (!currentBuild.wheels.axleStandard || item.rearAxle === currentBuild.wheels.axleStandard));
             return matchFork && matchWheels;
         }
         if (category === 'fork') {
@@ -421,7 +422,7 @@ function saveBuild() {
     return;
 }
     const jsonString = JSON.stringify(currentBuild);
-    localStorage.setItem('BuildMyBikeState', JSON.stringify(currentBuild));
+    localStorage.setItem('BuildMyBikeState', jsonString);
 
     actionBtn.innerText = '✓ Сохранено!';
     actionBtn.style.backgroundColor = '#22c55e';
